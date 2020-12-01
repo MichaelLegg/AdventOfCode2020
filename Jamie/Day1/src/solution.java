@@ -7,7 +7,6 @@ public class solution {
         ArrayList<Integer> input = stringPasser();
         System.out.println("P1:" + part1(input));
         System.out.println("P2:" + part2(input));
-        part2(input);
     }
 
     // Day 1, Part 1

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class solution {
     public static void main(String[] args) throws IOException {
-        ArrayList<Integer> input = stringPasser();
+        ArrayList<Integer> input = stringParser();
         System.out.println("P1:" + part1(input));
         System.out.println("P2:" + part2(input));
     }
@@ -31,7 +31,7 @@ public class solution {
     }
 
     // Random string parser to get my input
-    public static ArrayList<Integer> stringPasser() throws IOException {
+    public static ArrayList<Integer> stringParser() throws IOException {
         RandomAccessFile file = new RandomAccessFile("src/puzzleinput.txt", "r");
         ArrayList<Integer> arr = new ArrayList<Integer>();
         String value;

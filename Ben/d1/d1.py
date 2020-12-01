@@ -14,44 +14,48 @@ def timer(func):
 
 @timer
 def d1p1(nums):
-  for n in nums:
-    for m in nums:
-      if n == m:
+  for n1 in nums:
+    for n2 in nums:
+      if n1 == n2:
         continue
-      #print("Trying", n, m, n+m)
-      if n + m == 2020:
-        #print("d1p1 =", n*m)
-        return n*m
+      #print("Trying", n1, n2, n1+n2)
+      if n1 + n2 == 2020:
+        #print("found", n1*n2)
+        return n1*n2
 
 @timer
 def d1p2(nums):
-  for n in nums:
-    for m in nums:
-      for p in nums:
-        if n == m or m == p:
+  for n1 in nums:
+    for n2 in nums:
+      # skip any impossible solutions
+      if (n1+n2) >= 2020:
+        continue
+      for n3 in nums:
+        if (n1 == n2) or (n2 == n3):
           continue
-        #print("Trying", n, m, n+m)
-        if n + m + p == 2020:
-          #print("Found! mul =", n*m*p)
-          return n*m*p
+        if (n1 + n2 + n3) == 2020:
+          #print("found", n1, n2, n3)
+          return n1*n2*n3
 
 @timer
 def d1p2h(nums):
   hm = {}
-  for n in list(nums):
-    for m in list(nums):
-      key = (n,m)
-      if n == m: 
+  for n1 in list(nums):
+    for n2 in list(nums):
+      # skip any impossible solutions
+      if (n1+n2) >= 2020:
         continue
+      if n1 == n2: 
+        continue
+      # add possible solution to hashmap
+      key = (n1,n2)
       if key not in hm: 
-        hm[key] = n+m
-
-  i = 0
-  for k,v in hm.items():
-    n = nums[i%len(nums)]
-    if (v+n) == 2020:
-      return k[0]*k[1]*n
-    i += 1
+        hm[key] = n1+n2
+  # Add each input to remaining possible intermediate sums in hashmap
+  for n3 in list(nums):
+    for (n1,n2),s in hm.items():
+      if (s+n3) == 2020:
+        return n1*n2*n3
 
 
 with open("input.txt", "r") as f:

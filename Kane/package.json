@@ -1,0 +1,26 @@
+{
+  "name": "kane",
+  "version": "1.0.0",
+  "description": "Advent of Code 2020, Node Project.",
+  "main": "index.js",
+  "scripts": {
+    "day_1.1": "ts-node src/day_1/part_1/index.ts",
+    "day_1.2": "ts-node src/day_1/part_2/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MichaelLegg/AdventOfCode2020.git"
+  },
+  "author": "Kane Small",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MichaelLegg/AdventOfCode2020/issues"
+  },
+  "homepage": "https://github.com/MichaelLegg/AdventOfCode2020#readme",
+  "dependencies": {
+    "@types/node": "^14.14.10",
+    "nodemon": "^2.0.6",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.2"
+  }
+}

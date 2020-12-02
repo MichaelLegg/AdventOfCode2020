@@ -8,7 +8,9 @@
     "day:1.1v2": "ts-node src/d1.1v2/index.ts",
     "day:1.2": "ts-node src/d1.2/index.ts",
     "day:1.2v2": "ts-node src/d1.2v2/index.ts",
-    "day:1.2v3": "ts-node src/d1.2v3/index.ts"
+    "day:1.2v3": "ts-node src/d1.2v3/index.ts",
+    "day:2.1": "ts-node src/d2.1/index.ts",
+    "day:2.2": "ts-node src/d2.2/index.ts"
   },
   "repository": {
     "type": "git",

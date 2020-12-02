@@ -1,8 +1,9 @@
 import Chalk from "Chalk";
-import Fs from "fs"
 import Prompts from "Prompts";
+const xmasTree = require('xmas-tree');
 
 (async () => {
+    console.log(xmasTree());
     console.log(Chalk.red("Welcome to the 2020 Advent of code!"));
     
     const day = await Prompts({

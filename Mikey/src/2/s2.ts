@@ -8,10 +8,8 @@ export default function Solution(): number{
         row = row.replace(":", "");
         const pwArray: string[]  = row.split(" ");     
 
-        if(+(pwArray[3][+pwArray[0]-1] === pwArray[2]) ^ +(pwArray[3][+pwArray[1]-1] === pwArray[2])){
-            console.dir(pwArray)
-            numMatches++;      
-        }            
+        if(+(pwArray[3][+pwArray[0]-1] === pwArray[2]) ^ +(pwArray[3][+pwArray[1]-1] === pwArray[2]))
+            numMatches++;                         
     });
     return numMatches;
 }

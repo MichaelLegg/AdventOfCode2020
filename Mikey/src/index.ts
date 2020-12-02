@@ -1,8 +1,9 @@
 import Chalk from "Chalk";
-import Fs from "fs"
 import Prompts from "Prompts";
+const xmasTree = require('xmas-tree');
 
 (async () => {
+    console.log(xmasTree());
     console.log(Chalk.red("Welcome to the 2020 Advent of code!"));
     
     const day = await Prompts({
@@ -17,8 +18,7 @@ import Prompts from "Prompts";
         message: `${Chalk.blue("Enter a solution number: ")}`
     })
 
-    let input = Fs.readFileSync(`src/${day.day}/data.txt`).toString().split('\r\n').filter(s => s.length > 0).map((x => Number(x)));
-    const answer = (await import(`./${day.day}/s${problem.problem}`)).default(input);
+    const answer = (await import(`./${day.day}/s${problem.problem}`)).default();
 
     console.log(Chalk.magenta(`The answer was: ${answer}`))
 })();

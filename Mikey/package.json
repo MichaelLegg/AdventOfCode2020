@@ -26,6 +26,7 @@
   "dependencies": {
     "@types/prompts": "^2.0.9",
     "prompts": "^2.4.0",
-    "tslib": "^2.0.3"
+    "tslib": "^2.0.3",
+    "xmas-tree": "^1.0.3"
   }
 }

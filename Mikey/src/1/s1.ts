@@ -1,10 +1,13 @@
-export default function Solution(input: number[]){
-    input = input.filter(x=> x < 2020).sort((a, b) => a - b);
-    for(let i = 0; i < input.length; i++){
-        for(let j = input.length-1; j > 0; j--){
-            if(input[i] + input[j] === 2020){
-                return input[i] * input[j];
-            }
-        }
-    }
+import Fs from "fs"
+
+export default function Solution(): number{
+    let input = new Map<number, number>();
+    Fs.readFileSync(`src/1/data.txt`).toString().split('\r\n').filter(x => x.length > 0).map(x => Number(x)).forEach(x => input.set(x, x))
+    var ans = 0;
+    input.forEach((val) => {
+        let foundValue = input.get(2020-val) || 0;
+        if(val + foundValue === 2020)
+            ans = val * foundValue;
+    })
+    return ans 
 }

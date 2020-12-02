@@ -17,8 +17,7 @@ import Prompts from "Prompts";
         message: `${Chalk.blue("Enter a solution number: ")}`
     })
 
-    let input = Fs.readFileSync(`src/${day.day}/data.txt`).toString().split('\r\n').filter(s => s.length > 0).map((x => Number(x)));
-    const answer = (await import(`./${day.day}/s${problem.problem}`)).default(input);
+    const answer = (await import(`./${day.day}/s${problem.problem}`)).default();
 
     console.log(Chalk.magenta(`The answer was: ${answer}`))
 })();

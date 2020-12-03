@@ -29,7 +29,31 @@ def d3p1(lines):
       return sum
     sum += (lines[y][x] == '#')
 
+def traverse_slope(slope, right, down):
+  width = len(slope[0])-1
+  height = len(slope)
+  sum = 0
+  x = 0
+  y = 0
+  while 1:
+    x += right
+    x = x % width
+    y += down
+    if y > height-1:
+      return sum
+    sum += (slope[y][x] == '#')
+
+@timer
+def d3p2(slope):
+  sum =  traverse_slope(slope, 1, 1)
+  sum *= traverse_slope(slope, 3, 1)
+  sum *= traverse_slope(slope, 5, 1)
+  sum *= traverse_slope(slope, 7, 1)
+  sum *= traverse_slope(slope, 1, 2)
+  return sum
+
 with open("input.txt", "r") as f:
   data = f.readlines()
   # Run challenges
   d3p1(data)
+  d3p2(data)

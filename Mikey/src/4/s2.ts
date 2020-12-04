@@ -1,6 +1,6 @@
 import Fs from "fs"
 
-let allFields: string[] = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+let requiredFields: string[] = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
 
 export default function Solution(): number{
     let input: string[] = Fs.readFileSync(`src/4/data.txt`).toString().split('\r\n\r\n').filter(x => x.length > 0).map(x => x.replace(/\r?\n|\r/g, ' '));
@@ -9,9 +9,19 @@ export default function Solution(): number{
     input.forEach(x => {
         let current = x.split(' ');
         let keysValid = 0;
+
+        console.log(current);
+        const allReq  = requiredFields.every(req => {
+            return !!current.find(x => x.substring(0, 3) === req)
+        })
+
+        console.log(allReq);
+
+        if(allReq){
         current.forEach(y => {
             const key = y.substring(0, 3);
             const value = y.substring(4, y.length);
+
             switch (key){
                 case "byr":
                     if(+value >= 1920 && +value <= 2002) keysValid++;
@@ -38,13 +48,18 @@ export default function Solution(): number{
                         keysValid++;
                 }
                 case "pid":
-                    if(value.length === 9)
+                    if(value.length === 9){
                         keysValid++;
-            }
-
-            if(keysValid === current.length && keysValid === allFields.length)
-                validCount++;            
+                    }
+                case "cid":
+                    keysValid++;
+            }           
         })
+
+        if(keysValid === current.length)
+            validCount++;   
+        }         
+        
     })
     return validCount;
 }

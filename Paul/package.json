@@ -12,7 +12,9 @@
     "day:2.1": "ts-node src/d2.1/index.ts",
     "day:2.2": "ts-node src/d2.2/index.ts",
     "day:3.1": "ts-node src/d3.1/index.ts",
-    "day:3.2": "ts-node src/d3.2/index.ts"
+    "day:3.2": "ts-node src/d3.2/index.ts",
+    "day:4.1": "ts-node src/d4.1/index.ts",
+    "day:4.2": "ts-node src/d4.2/index.ts"
   },
   "repository": {
     "type": "git",

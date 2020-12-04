@@ -47,58 +47,30 @@ def d4p2(data):
     p = p.replace("\n"," ")
     p = p.split(" ")
     fields = [f[:3] for f in p]
+    values = [f[4:] for f in p]
+    fv = dict(zip(fields, values))
 
     # check all required fields are present
     valid = [f in fields for f in req_fields]
     if not all(valid):
       continue
 
-    # Extract values into correct data types
-    values = [f[4:] for f in p]
-    fv = dict(zip(fields, values))
-    fv['byr'] = int(fv['byr'])
-    fv['iyr'] = int(fv['iyr'])
-    fv['eyr'] = int(fv['eyr'])
-
     # is passport valid
     valid = 1
-
     # start of value checks
-    # hgt might be in cm or inches, and convert to int
-    if 'cm' in fv['hgt']:
-      fv['hgt'] = fv['hgt'].split('c')
-      fv['hgt'][0] = int(fv['hgt'][0])
-    elif 'in' in fv['hgt']:
-      fv['hgt'] = fv['hgt'].split('i')
-      fv['hgt'][0] = int(fv['hgt'][0])
-    else:
-      # no unit provided, so its invalid
-      valid = 0
-
     # check values are valid
     valid &= len(fv['pid']) == 9
-    valid &= (fv["byr"] >= 1910) and (fv["byr"] <= 2002)
-    valid &= (fv["iyr"] >= 2010) and (fv["iyr"] <= 2020)
-    valid &= (fv["eyr"] >= 2020) and (fv["eyr"] <= 2030)
-    if "m" in fv["hgt"]: # cm
-      valid &= (fv["hgt"][0] >= 150) and (fv["hgt"][0] <= 193)
-    elif "n" in fv["hgt"]: # in
-      valid &= (fv["hgt"][0] >= 59) and (fv["hgt"][0] <= 76)
-    else:
-      continue
-
-    # check hcl value
-    if not (fv['hcl'][0] == '#'):
-      continue
-    valid &= len(fv['hcl'][1:]) == 6
-    for c in fv['hcl'][1:]:
-      valid &= (c >= '0' and c <= '9') or (c >= 'a' and c <= 'f')
-    
-    # check ecl value
-    req_ecl = ['amb', 'blu', 'brn', 'grn', 'gry', 'hzl', 'oth']
-    if fv['ecl'] not in req_ecl:
-      continue
-    
+    valid &= 1910 <= int(fv["byr"]) <= 2020
+    valid &= 2010 <= int(fv["iyr"]) <= 2020
+    valid &= 2020 <= int(fv["eyr"]) <= 2030
+    # if cm, 150 <= h <= 193
+    # if in, 59  <= h <= 76
+    valid &= (fv['hgt'][-2:] == "cm" and 150 <= int(fv['hgt'][:-2]) <= 193) or \
+             (fv['hgt'][-2:] == "in" and  59 <= int(fv['hgt'][:-2]) <= 76)
+    valid &= (fv['hcl'][0] == '#') and \
+             (len(fv['hcl'][1:]) == 6) and \
+             all([('0' <= c <= '9') or ('a' <= c <= 'f') for c in fv['hcl'][1:]])
+    valid &= fv['ecl'] in ['amb', 'blu', 'brn', 'grn', 'gry', 'hzl', 'oth']
     sum += valid
   return sum
 

@@ -9,7 +9,7 @@ export default function Solution(): number{
         const column = findCenter("L", 0, 7, currentRow.slice(7, currentRow.length));
         seatIds.push((row * 8) + column);
     });
-    return seatIds.sort((a, b) => b-a)[0];
+    return Math.max(...seatIds);
 }   
 
 function findCenter(lowerChar: string, lowerBound: number, upperBound: number, characters: string): number{

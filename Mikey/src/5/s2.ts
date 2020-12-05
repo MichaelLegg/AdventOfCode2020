@@ -9,7 +9,7 @@ export default function Solution(): number{
         const column = findCenter("L", 0, 7, currentRow.slice(7, currentRow.length));
         seatIds.push((row * 8) + column);
     });
-    let retval = seatIds.sort((a, b) => a - b).find(x => seatIds.find(y => y===x + 1) ? false : true);    
+    let retval = seatIds.sort((a, b) => a - b).find(x => seatIds.find(y => y === x + 1) ? false : true);    
     return retval ? retval + 1 : 0;
 }   
 

@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { AdventDay } from "../src/common";
 import day4 from "../src/day4";
+import { calculateSeatId } from "../src/day5";
 
 const IGNORE = Symbol();
 
@@ -34,7 +35,11 @@ const tests: {
 		sample1: 2,
 		1: 208,
 		sample2: IGNORE,
-		2: 167
+		2: 167,
+	},
+	5: {
+		sample1: 820,
+		1: 866
 	},
 };
 
@@ -68,6 +73,15 @@ const tests: {
 		});
 		it("part 2 using sample valid data", async () => {
 			expect(day4.part2(await day4.getInput("day4.valid.txt"))).to.eq(4);
+		});
+	});
+
+	describe("day 5 (binary check)", () => {
+		it("part 1 computes seat id correctly", async () => {
+			expect(calculateSeatId("FBFBBFFRLR")).to.eq(357);
+			expect(calculateSeatId("BFFFBBFRRR")).to.eq(567);
+			expect(calculateSeatId("FFFBBBFRRR")).to.eq(119);
+			expect(calculateSeatId("BBFFBBFRLL")).to.eq(820);
 		});
 	});
 })();

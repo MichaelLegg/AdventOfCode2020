@@ -39,7 +39,9 @@ const tests: {
 	},
 	5: {
 		sample1: 820,
-		1: 866
+		1: 866,
+		sample2: IGNORE,
+		2: 583
 	},
 };
 

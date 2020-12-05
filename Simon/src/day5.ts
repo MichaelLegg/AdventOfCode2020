@@ -9,7 +9,13 @@ export default {
 		return input.map(calculateSeatId).sort((a, b) => b - a)[0];
 	},
 	part2(input: string[]): number {
-		return 0;
+		const seats = input.map(calculateSeatId).sort((a, b) => a - b);
+		for (let i = seats[0]; i < seats[seats.length - 1]; i++) {
+			if (!seats.includes(i)) {
+				return i;
+			}
+		}
+		throw new Error("Unable to find missing seat");
 	},
 	async getInput(file: string) {
 		return await getInputLines(file, "\r\n");

@@ -10,56 +10,53 @@ export default function Solution(): number{
         let current = x.split(' ');
         let keysValid = 0;
 
-        console.log(current);
         const allReq  = requiredFields.every(req => {
             return !!current.find(x => x.substring(0, 3) === req)
         })
 
-        console.log(allReq);
-
         if(allReq){
-        current.forEach(y => {
-            const key = y.substring(0, 3);
-            const value = y.substring(4, y.length);
+            current.forEach(y => {
+                const key = y.substring(0, 3);
+                const value = y.substring(4, y.length);
 
-            switch (key){
-                case "byr":
-                    if(+value >= 1920 && +value <= 2002) keysValid++;
-                case "iyr":
-                    if(+value >= 2010 && +value <= 2020) keysValid++;
-                case "eyr":
-                    if(+value >= 2020 && +value <= 2030) keysValid++;
-                case "hgt": {
-                    const val = +value.substring(0, value.length-2);
-                    if(value.includes("cm")) 
-                        if(val >=150 && val <=193) keysValid++;
-                    else if(value.includes("in"))
-                        if(val >=59 && val <=76) keysValid++;          
-                }
-                case "hcl":{
-                    if(value.length === 7)
-                        if(value[0] === "#")
-                            if([...value.substring(1, value.length)].every(char => char.match(/^[a-f0-9]+$/)))
-                                keysValid++;   
-                }
-                case "ecl":{
-                    const validEcl = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
-                    if (validEcl.some(x=> x === value))
-                        keysValid++;
-                }
-                case "pid":
-                    if(value.length === 9){
-                        keysValid++;
-                    }
-                case "cid":
-                    keysValid++;
-            }           
-        })
+                switch (key){
+                    case "byr":
+                        if(+value >= 1920 && +value <= 2002) keysValid++;
+                        break;
+                    case "iyr":
+                        if(+value >= 2010 && +value <= 2020) keysValid++;
+                        break;
+                    case "eyr":
+                        if(+value >= 2020 && +value <= 2030) keysValid++;
+                        break;
+                    case "hgt": 
+                        const val = +(value.substring(0, value.length-2));
+                        if(value.includes("cm")) 
+                            if(val >=150 && val <=193) keysValid++;
+                        else if(value.includes("in"))
+                            if(val >=59 && val <=76) keysValid++;      
+                        break;
+                    case "hcl":
+                        if(value.length === 7)
+                            if(value[0] === "#")
+                                if([...value.substring(1, value.length)].every(char => !!char.match(/^[a-f0-9]+$/)))
+                                    keysValid++;
+                        break;
+                    case "ecl":
+                        const validEcl = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
+                        if (validEcl.some(x=> x === value))
+                            keysValid++;
+                        break;
+                    case "pid":
+                        if(value.length === 9)
+                            keysValid++;
+                        break;
+                }           
+            })
 
-        if(keysValid === current.length)
-            validCount++;   
-        }         
-        
+            if(keysValid === requiredFields.length)
+                validCount++;
+            } 
     })
     return validCount;
 }

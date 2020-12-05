@@ -1,61 +1,23 @@
-import Fs from "fs"
-
-let requiredFields: string[] = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+import Fs, { readlink } from "fs"
 
 export default function Solution(): number{
-    let input: string[] = Fs.readFileSync(`src/4/data.txt`).toString().split('\r\n\r\n').filter(x => x.length > 0).map(x => x.replace(/\r?\n|\r/g, ' '));
-    
-    let validCount = 0;
-    input.forEach(x => {
-        let current = x.split(' ');
-        let keysValid = 0;
+    let input: string[] = Fs.readFileSync(`src/5/data.txt`).toString().split('\r\n').filter(x => x.length > 0);    
+    const seatIds: number[] = [];
 
-        const allReq  = requiredFields.every(req => {
-            return !!current.find(x => x.substring(0, 3) === req)
-        })
+    input.forEach(currentRow => {
+        const row = findCenter("F", 0, 127, currentRow.slice(0, 7))
+        const column = findCenter("L", 0, 7, currentRow.slice(7, currentRow.length));
+        seatIds.push((row * 8) + column);
+    });
+    let retval = seatIds.sort((a, b) => a - b).find(x => seatIds.find(y => y === x + 1) ? false : true);    
+    return retval ? retval + 1 : 0;
+}   
 
-        if(allReq){
-            current.forEach(y => {
-                const key = y.substring(0, 3);
-                const value = y.substring(4, y.length);
-
-                switch (key){
-                    case "byr":
-                        if(+value >= 1920 && +value <= 2002) keysValid++;
-                    case "iyr":
-                        if(+value >= 2010 && +value <= 2020) keysValid++;
-                    case "eyr":
-                        if(+value >= 2020 && +value <= 2030) keysValid++;
-                    case "hgt": {
-                        const val = +(value.substring(0, value.length-2));
-                        if(value.includes("cm")) 
-                            if(val >=150 && val <=193) keysValid++;
-                        else if(value.includes("in"))
-                            if(val >=59 && val <=76) keysValid++;          
-                    }
-                    case "hcl":{
-                        if(value.length === 7)
-                            if(value[0] === "#")
-                                if([...value.substring(1, value.length)].every(char => !!char.match(/^[a-f0-9]+$/)))
-                                    keysValid++;   
-                    }
-                    case "ecl":{
-                        const validEcl = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
-                        if (validEcl.some(x=> x === value))
-                            keysValid++;
-                    }
-                    case "pid":
-                        if(value.length === 9){
-                            keysValid++;
-                        }
-                }           
-            })
-
-            if(keysValid === requiredFields.length){
-                console.table(current);
-                validCount++;   
-            }
-        } 
-    })
-    return validCount;
+function findCenter(lowerChar: string, lowerBound: number, upperBound: number, characters: string): number{
+    for(let i = 0; i < characters.length-1; i++){
+        const newVal = (lowerBound + upperBound) / 2;
+        if(characters[i] === lowerChar) upperBound =  Math.floor(newVal);
+        else lowerBound = Math.ceil(newVal);
+    }
+    return characters[characters.length-1] === lowerChar ? lowerBound : upperBound;
 }

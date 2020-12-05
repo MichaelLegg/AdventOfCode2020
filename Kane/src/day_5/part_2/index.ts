@@ -30,7 +30,15 @@ function boardingPassCheck(input: string[]) {
         
         seatIds.push((rows[0] * 8) + cols[0]);
     }
-    return Math.max(...seatIds);
+
+    seatIds.sort((a,b) => a-b);
+    let missingSeat = 0;
+    for(let i=0; i < seatIds.length; i++) {
+        if(seatIds[i+1] < seatIds.length && seatIds[i+1] !== seatIds[i] + 1) {
+            missingSeat = seatIds[i] + 1;
+        }
+    }
+    return missingSeat;
 }
 console.log("Puzzle answer: " + boardingPassCheck(data));
 

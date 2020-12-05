@@ -1,9 +1,7 @@
 import { AdventDay, getInputLines } from "./common";
 
 export function calculateSeatId(pass: string): number {
-	return pass
-		.split("")
-		.reduce((p, n, i) => (n.match(/B|R/) ? p + Math.pow(2, 9 - i) : p), 0);
+	return parseInt(pass.replace(/B|R/g, "1").replace(/F|L/g, "0"), 2);
 }
 
 export default {

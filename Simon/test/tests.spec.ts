@@ -43,6 +43,10 @@ const tests: {
 		sample2: IGNORE,
 		2: 583
 	},
+	6: {
+		sample1: 11,
+		1: 6565
+	}
 };
 
 (async () => {

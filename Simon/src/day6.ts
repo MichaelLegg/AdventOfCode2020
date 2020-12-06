@@ -10,8 +10,7 @@ export default {
 	part2(input: string[]): number {
 		return input.reduce((p, n) => {
 			const grouped = n
-				.replace(/\s/g, "")
-				.split("")
+				.split(/\n|/g)
 				.reduce(
 					(a, b) => ((a[b] = b in a ? a[b] + 1 : 1), a),
 					{} as Record<string, number>

@@ -1,6 +1,5 @@
 import { createInterface } from "readline";
 import { createReadStream} from "fs";
-import { isConstructorDeclaration } from "typescript";
 
 async function processLineByLine() {
   const rl = createInterface({
@@ -9,7 +8,6 @@ async function processLineByLine() {
   });
 
   let data = [];
-  // let passports = [];
   let passportObj = {};
   let validPassports = 0;
 
@@ -23,12 +21,10 @@ async function processLineByLine() {
 
       if(idx + 1 === data.length) {
         if(Object.keys(passportObj).length === 8 || (Object.keys(passportObj).length === 7 && passportObj["cid"] === undefined)) validPassports++;
-        // passports.push(passportObj);
         passportObj = {};
       }
     } else {
       if(Object.keys(passportObj).length === 8 || (Object.keys(passportObj).length === 7 && passportObj["cid"] === undefined)) validPassports++;
-      // passports.push(passportObj);
       passportObj = {};
     }
   });

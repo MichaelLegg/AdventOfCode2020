@@ -1,5 +1,28 @@
 import { AdventDay, getInputLines } from "./common";
 
+export let part2Method: "filtered" | "counted" = "filtered";
+
+function part2Counted(p: number, n: string) {
+	const grouped = n
+		.split(/\n|/g)
+		.reduce(
+			(a, b) => ((a[b] = b in a ? a[b] + 1 : 1), a),
+			{} as Record<string, number>
+		);
+	const people = n.split(/\r\n/g);
+	return (
+		p + Object.keys(grouped).filter((g) => grouped[g] === people.length).length
+	);
+}
+
+function part2Filtered(p: number, n: string) {
+	const answers = new Set([...n.replace(/\s/g, "")]);
+	const people = n.split(/\r\n/g);
+	return (
+		p + [...answers].filter((a) => !people.find((p) => !p.includes(a))).length
+	);
+}
+
 export default {
 	part1(input: string[]): number {
 		return input.reduce(
@@ -8,20 +31,10 @@ export default {
 		);
 	},
 	part2(input: string[]): number {
-		return input.reduce((p, n) => {
-			const grouped = n
-				.split(/\n|/g)
-				.reduce(
-					(a, b) => ((a[b] = b in a ? a[b] + 1 : 1), a),
-					{} as Record<string, number>
-				);
-
-			const people = n.split(/\r\n/g);
-			return (
-				p +
-				Object.keys(grouped).filter((g) => grouped[g] === people.length).length
-			);
-		}, 0);
+		return input.reduce(
+			part2Method === "filtered" ? part2Filtered : part2Counted,
+			0
+		);
 	},
 	async getInput(file: string) {
 		return await getInputLines(file, "\r\n\r\n");

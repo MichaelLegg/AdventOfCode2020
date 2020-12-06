@@ -3,12 +3,7 @@ import { AdventDay, getInputLines } from "./common";
 export default {
 	part1(input: string[]): number {
 		return input.reduce(
-			(p, n) =>
-				p +
-				n
-					.replace(/\s/g, "")
-					.split("")
-					.reduce((a, b) => a.add(b), new Set<string>()).size,
+			(p, n) => p + new Set([...n.replace(/\s/g, "")]).size,
 			0
 		);
 	},

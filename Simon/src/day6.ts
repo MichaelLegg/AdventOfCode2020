@@ -1,4 +1,3 @@
-import { group } from "console";
 import { AdventDay, getInputLines } from "./common";
 
 export default {

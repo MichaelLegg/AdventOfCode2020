@@ -1,4 +1,4 @@
-import Fs, { readlink } from "fs"
+import Fs from "fs"
 
 export default function Solution(): number{
     let input: string[] = Fs.readFileSync(`src/5/data.txt`).toString().split('\r\n').filter(x => x.length > 0);    

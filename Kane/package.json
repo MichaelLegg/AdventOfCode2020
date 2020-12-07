@@ -11,8 +11,10 @@
     "day_3.1": "ts-node src/day_3/part_1/index.ts",
     "day_3.2": "ts-node src/day_3/part_2/index.ts",
     "day_4.1": "ts-node src/day_4/part_1/index.ts",
+    "day_4.2": "ts-node src/day_4/part_2/index.ts",
     "day_5.1": "ts-node src/day_5/part_1/index.ts",
-    "day_5.2": "ts-node src/day_5/part_2/index.ts"
+    "day_5.2": "ts-node src/day_5/part_2/index.ts",
+    "day_6.1": "ts-node src/day_6/part_1/index.ts"
   },
   "repository": {
     "type": "git",

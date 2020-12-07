@@ -37,10 +37,8 @@ export default function Solution(): number{
                             if(val >=59 && val <=76) keysValid++;      
                         break;
                     case "hcl":
-                        if(value.length === 7)
-                            if(value[0] === "#")
-                                if([...value.substring(1, value.length)].every(char => !!char.match(/^[a-f0-9]+$/)))
-                                    keysValid++;
+                        if(!!value.match(/^#[0-9a-f]{6}$/))
+                            keysValid++;
                         break;
                     case "ecl":
                         const validEcl = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]

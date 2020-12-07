@@ -11,7 +11,7 @@ export async function getInputLines(
 }
 
 export interface AdventDay<T> {
-	part1(input: T): any;
-	part2(input: T): any;
+	part1(input: T, opt?: string): any;
+	part2(input: T, opt?: string): any;
 	getInput(file: string): Promise<T>;
 }

@@ -1,7 +1,5 @@
 import { AdventDay, getInputLines } from "./common";
 
-export let part2Method: "filtered" | "counted" = "filtered";
-
 function part2Counted(p: number, n: string) {
 	const grouped = n
 		.split(/\n|/g)
@@ -30,11 +28,8 @@ export default {
 			0
 		);
 	},
-	part2(input: string[]): number {
-		return input.reduce(
-			part2Method === "filtered" ? part2Filtered : part2Counted,
-			0
-		);
+	part2(input: string[], opt?: string): number {
+		return input.reduce(opt === "filtered" ? part2Filtered : part2Counted, 0);
 	},
 	async getInput(file: string) {
 		return await getInputLines(file, "\r\n\r\n");

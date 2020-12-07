@@ -39,8 +39,8 @@ const tests: {
 		puzzle: [6565, { "": 3137, filtered: 3137 }],
 	},
 	7: {
-		sample: [4],
-		puzzle: [248],
+		sample: [4, { sample: 32, sample2: 126 }],
+		puzzle: [248, 57281],
 	},
 };
 

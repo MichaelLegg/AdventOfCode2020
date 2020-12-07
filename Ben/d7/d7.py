@@ -29,14 +29,14 @@ def traverse_bag_until_sg(bags, bag_lut, bag_type, depth=0):
   # return if this bag has subbags with shiny gold
   return has_sg
 
+bag_lut = {}
+  
 @timer
 def d7p1(data):
   import re
   # Dictonary containing 'bag_name': {
   #  'subbag_name': <count>
   # }
-  bag_lut = {}
-  
   for line in data.split('\n'):
     # extract bag name
     bag_name = re.search(r'(\w+ \w+) bags contain', line).group(1)
@@ -47,17 +47,31 @@ def d7p1(data):
     # add to all bags lut
     bag_lut[bag_name] = bag_contents
 
+  # recursively traverse bags in search of shiny gold
   sum = 0
   for bag,contents in bag_lut.items():
     bag_has_sg = traverse_bag_until_sg(contents, bag_lut, bag)
     if bag_has_sg:
-      print("Bag containing sg:", bag, contents)
+      # print("Bag containing sg:", bag, contents)
       sum += 1
   return sum
 
+def count_bags(bags, bag_lut, bag_type, depth=0):
+  print(" "*depth, bag_type, bags)
+  if bags == {}:
+    return 1
+
+  # iterate through this bags contents
+  num_bags = 1
+  for bag_type,bag_count in bags.items():
+    num_bags += bag_count * count_bags(bag_lut[bag_type], bag_lut, bag_type, depth+1)
+  return num_bags
+
 @timer
 def d7p2(data):
-  return 0
+  # how many bags inside a shiny gold bag
+  bag = bag_lut['shiny gold']
+  return count_bags(bag, bag_lut, 'shiny gold') -1
 
 with open("input.txt", "r") as f:
   data = f.read()

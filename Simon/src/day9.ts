@@ -24,15 +24,15 @@ export default {
 	},
 	part2(input: number[]): number {
 		const target = this.part1(input);
-		for (let i = 0; i < input.length; i++) {
-			let s = 0;
-			let j = i;
-			while (s < target) {
-				s += input[j++];
-			}
+		let s = input[0];
+		for (let i = 0, j = 0; j < input.length; ) {
 			if (s === target) {
 				const v = input.slice(i, j).sort((a, b) => a - b);
 				return v[0] + v[v.length - 1];
+			} else if (s < target) {
+				s += input[++j];
+			} else {
+				s -= input[i++];
 			}
 		}
 		throw "result not found";

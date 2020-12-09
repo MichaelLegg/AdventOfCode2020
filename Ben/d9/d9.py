@@ -34,10 +34,20 @@ def d9p1(data):
           found = True
     if not found:
       return target
-          
   return 0
+
+@timer
+def d9p2(target, data):
+  numbers = list(map(int, data.split('\n')))
+  for i in range(len(numbers)):
+    for j in range(len(numbers)):
+      if i == j: continue
+      subset = numbers[i:j]
+      if sum(subset) == target:
+        return min(subset)+max(subset)
 
 with open("input.txt", "r") as f:
   data = f.read()
   # Run challenges
-  d9p1(data)
+  target = d9p1(data)
+  d9p2(target, data)

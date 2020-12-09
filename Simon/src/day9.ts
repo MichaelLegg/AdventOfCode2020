@@ -6,14 +6,13 @@ export default {
 		for (let i = pLen; i < input.length; i++) {
 			const target = input[i];
 			let found = false;
-			for (let j = i - pLen; j < i; j++) {
+			for (let j = i - pLen; j < i && !found; j++) {
 				for (let k = j + 1; k < i; k++) {
 					if (input[j] + input[k] === target) {
 						found = true;
 						break;
 					}
 				}
-				if (found) break;
 			}
 			if (!found) {
 				return target;

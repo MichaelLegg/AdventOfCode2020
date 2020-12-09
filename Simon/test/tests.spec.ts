@@ -46,6 +46,10 @@ const tests: {
 		sample: [5, 8],
 		puzzle: [2051, 2304],
 	},
+	9: {
+		sample: [127, 62],
+		puzzle: [90433990, 11691646],
+	},
 };
 
 (async () => {

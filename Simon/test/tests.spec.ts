@@ -50,6 +50,10 @@ const tests: {
 		sample: [127, 62],
 		puzzle: [90433990, 11691646],
 	},
+	10: {
+		sample: [{ sample: 7 * 5, sample2: 22 * 10 }],
+		puzzle: [1],
+	},
 };
 
 (async () => {

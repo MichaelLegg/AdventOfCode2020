@@ -24,6 +24,7 @@ def d10p1(data):
     cur = chargers[i]
     if i == len(chargers)-1: 
       continue
+    # calculate joltage difference
     nxt = chargers[i+1]
     diff = nxt-cur
     # incremnt counter for this difference
@@ -34,36 +35,35 @@ def d10p1(data):
   diff_counters[3] += 1
   return diff_counters[1]*diff_counters[3]
 
-memory = {}
-def search(current, chargers, i, ls):
-  # ls = copy.deepcopy(ls)
-  # ls.append(current)
-  # find next possible chargers in the bag
+mem = {}
+def search(jolt, chargers, i):
+  # find next possible chargers in the next 3 chargers
   next3 = chargers[i:i+3]
-  possible = tuple(filter(lambda x: x <= current+3, next3))
+  possible = tuple(filter(lambda x: x <= jolt+3, next3))
 
-  # store solution to avoid redoing
-  if possible in memory:
-    return memory[possible]
+  # See if already solved for these possible
+  if possible in mem:
+    return mem[possible]
 
   # if no possible next charger, we've reached the end
   if len(possible) == 0:
     return 1
+
   # for each possible charger, start a new search tree using it
   s = 0
   for pi in range(len(possible)):
-    charger = possible[pi]
-    s += search(charger, chargers, i+pi+1, ls)
+    jolt_nxt = possible[pi]
+    s += search(jolt_nxt, chargers, i+pi+1)
 
-  memory[possible] = s
+  # store result
+  mem[possible] = s
   return s
 
 @timer
 def d10p2(data):
   chargers = map(int, data.split("\n"))
   chargers = sorted(chargers)
-  result = []
-  return search(0, chargers, 0, [])
+  return search(0, chargers, 0)
 
 with open("input.txt", "r") as f:
   data = f.read()

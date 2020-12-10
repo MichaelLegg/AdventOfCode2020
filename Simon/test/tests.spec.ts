@@ -51,8 +51,8 @@ const tests: {
 		puzzle: [90433990, 11691646],
 	},
 	10: {
-		sample: [{ sample: 7 * 5, sample2: 22 * 10 }],
-		puzzle: [1],
+		sample: [{ sample: 7 * 5, sample2: 22 * 10 }, { sample: 8, sample2: 19208 }],
+		puzzle: [2516],
 	},
 };
 

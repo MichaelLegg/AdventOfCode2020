@@ -15,36 +15,28 @@ def timer(func):
   return wrapper
 
 def adj_count(x, y, all_seats):
-  count_empty = 0
   count_occup = 0
   w = len(all_seats[0])
   h = len(all_seats)
   # count surrounding seats
-  idx_tl = (x-1, y-1)
-  idx_tt = (x,y-1)
-  idx_tr = (x+1,y-1)
-  idx_ll = (x-1,y)
-  idx_rr = (x+1,y)
-  idx_bl = (x-1,y+1)
-  idx_bb = (x,y+1)
-  idx_br = (x+1,y+1)
-  count_empty += 1 if 0<=idx_tl[0]<w and 0<=idx_tl[1]<h and all_seats[idx_tl[1]][idx_tl[0]] == 'L' else 0
-  count_empty += 1 if 0<=idx_tt[0]<w and 0<=idx_tt[1]<h and all_seats[idx_tt[1]][idx_tt[0]] == 'L' else 0
-  count_empty += 1 if 0<=idx_tr[0]<w and 0<=idx_tr[1]<h and all_seats[idx_tr[1]][idx_tr[0]] == 'L' else 0
-  count_empty += 1 if 0<=idx_ll[0]<w and 0<=idx_ll[1]<h and all_seats[idx_ll[1]][idx_ll[0]] == 'L' else 0
-  count_empty += 1 if 0<=idx_rr[0]<w and 0<=idx_rr[1]<h and all_seats[idx_rr[1]][idx_rr[0]] == 'L' else 0
-  count_empty += 1 if 0<=idx_bl[0]<w and 0<=idx_bl[1]<h and all_seats[idx_bl[1]][idx_bl[0]] == 'L' else 0
-  count_empty += 1 if 0<=idx_bb[0]<w and 0<=idx_bb[1]<h and all_seats[idx_bb[1]][idx_bb[0]] == 'L' else 0
-  count_empty += 1 if 0<=idx_br[0]<w and 0<=idx_br[1]<h and all_seats[idx_br[1]][idx_br[0]] == 'L' else 0
-  count_occup += 1 if 0<=idx_tl[0]<w and 0<=idx_tl[1]<h and all_seats[idx_tl[1]][idx_tl[0]] == '#' else 0
-  count_occup += 1 if 0<=idx_tt[0]<w and 0<=idx_tt[1]<h and all_seats[idx_tt[1]][idx_tt[0]] == '#' else 0
-  count_occup += 1 if 0<=idx_tr[0]<w and 0<=idx_tr[1]<h and all_seats[idx_tr[1]][idx_tr[0]] == '#' else 0
-  count_occup += 1 if 0<=idx_ll[0]<w and 0<=idx_ll[1]<h and all_seats[idx_ll[1]][idx_ll[0]] == '#' else 0
-  count_occup += 1 if 0<=idx_rr[0]<w and 0<=idx_rr[1]<h and all_seats[idx_rr[1]][idx_rr[0]] == '#' else 0
-  count_occup += 1 if 0<=idx_bl[0]<w and 0<=idx_bl[1]<h and all_seats[idx_bl[1]][idx_bl[0]] == '#' else 0
-  count_occup += 1 if 0<=idx_bb[0]<w and 0<=idx_bb[1]<h and all_seats[idx_bb[1]][idx_bb[0]] == '#' else 0
-  count_occup += 1 if 0<=idx_br[0]<w and 0<=idx_br[1]<h and all_seats[idx_br[1]][idx_br[0]] == '#' else 0
-  return count_empty, count_occup
+  look_nw = (x-1, y-1)
+  look_nn = (x,y-1)
+  look_ne = (x+1,y-1)
+  look_ww = (x-1,y)
+  look_ee = (x+1,y)
+  look_sw = (x-1,y+1)
+  look_ss = (x,y+1)
+  look_se = (x+1,y+1)
+  # check if coords in inside the grid and are empty
+  count_occup += ((0<=look_nw[0]<w) and (0<=look_nw[1]<h)) and (all_seats[look_nw[1]][look_nw[0]] == '#')
+  count_occup += ((0<=look_nn[0]<w) and (0<=look_nn[1]<h)) and (all_seats[look_nn[1]][look_nn[0]] == '#')
+  count_occup += ((0<=look_ne[0]<w) and (0<=look_ne[1]<h)) and (all_seats[look_ne[1]][look_ne[0]] == '#')
+  count_occup += ((0<=look_ww[0]<w) and (0<=look_ww[1]<h)) and (all_seats[look_ww[1]][look_ww[0]] == '#')
+  count_occup += ((0<=look_ee[0]<w) and (0<=look_ee[1]<h)) and (all_seats[look_ee[1]][look_ee[0]] == '#')
+  count_occup += ((0<=look_sw[0]<w) and (0<=look_sw[1]<h)) and (all_seats[look_sw[1]][look_sw[0]] == '#')
+  count_occup += ((0<=look_ss[0]<w) and (0<=look_ss[1]<h)) and (all_seats[look_ss[1]][look_ss[0]] == '#')
+  count_occup += ((0<=look_se[0]<w) and (0<=look_se[1]<h)) and (all_seats[look_se[1]][look_se[0]] == '#')
+  return count_occup
 
 @timer
 def d11p1(data):
@@ -54,30 +46,85 @@ def d11p1(data):
   last_seats = data.split("\n")
   stable = False
   while not stable:
-    print()
     new_seats = copy.deepcopy(last_seats)
     for y,row in enumerate(last_seats):
       row = list(row)
       for x,seat in enumerate(row):
         # count surrounding seats
-        if last_seats[y][x] == '.': 
+        if seat == '.': 
           continue
-        count_empty, count_occup = adj_count(x, y, last_seats)
-        if last_seats[y][x] == 'L' and count_occup == 0:
+        count_occup = adj_count(x, y, last_seats)
+        if seat == 'L' and count_occup == 0:
           row[x] = '#'
-        elif last_seats[y][x] == '#' and count_occup >= 4:
+        elif seat == '#' and count_occup >= 4:
           row[x] = 'L'
-
       row = "".join(row)
       new_seats[y] = row
-    print("\n".join(new_seats))
     # stable when last current seats == last seats
     stable = new_seats == last_seats
     last_seats = new_seats
+  return "".join(last_seats).count('#')
 
+def seat_visible(x, y, seats):
+  look_nw = lambda x,y: (x-1, y-1)
+  look_nn = lambda x,y: (x,y-1)
+  look_ne = lambda x,y: (x+1,y-1)
+  look_ww = lambda x,y: (x-1,y)
+  look_ee = lambda x,y: (x+1,y)
+  look_sw = lambda x,y: (x-1,y+1)
+  look_ss = lambda x,y: (x,y+1)
+  look_se = lambda x,y: (x+1,y+1)
+  directions = [look_nw, look_nn, look_ne, look_ww, look_ee, look_sw, look_ss, look_se]
+  count_occup = 0
+  # For each looking direction, loop through grid in that direction until sight blocked
+  for look in directions:
+    new_x, new_y = x, y
+    sight_blocked = False
+    # keep looping through grid in that direction until sight blocked
+    while not sight_blocked:
+      # Move to seat in current looking direction 'look'
+      new_x,new_y = look(new_x,new_y)
+      # if outside grid, stop looking
+      if not (0 <= new_x < len(seats[0]) and 0 <= new_y < len(seats)):
+        break
+      looking_at_seat = seats[new_y][new_x]
+      # if current seat is empty or occupied
+      sight_blocked = looking_at_seat == '#' or looking_at_seat == 'L'
+      count_occup += looking_at_seat == '#'
+  return count_occup
+
+@timer
+def d11p2(data):
+  import copy
+  last_seats = data.split("\n")
+  # Keep iterating while the seats haven't settled
+  stable = False
+  while not stable:
+    # print()
+    new_seats = copy.deepcopy(last_seats)
+    for y,row in enumerate(last_seats):
+      row = list(row)
+      for x,seat in enumerate(row):
+        # if not a seat, skip it
+        if seat == '.': 
+          continue
+        # count surrounding seats
+        count_occup = seat_visible(x, y, last_seats)
+        if seat == '#' and count_occup >= 5:
+          row[x] = 'L'
+        elif seat == 'L' and count_occup == 0:
+          row[x] = '#'
+
+      row = "".join(row)
+      new_seats[y] = row
+    # print("\n".join(new_seats))
+    # stable when last current seats == last seats
+    stable = new_seats == last_seats
+    last_seats = new_seats
   return "".join(last_seats).count('#')
 
 with open("input.txt", "r") as f:
   data = f.read()
   # Run challenges
   d11p1(data)
+  d11p2(data)

@@ -18,24 +18,22 @@ def adj_count(x, y, all_seats):
   count_occup = 0
   w = len(all_seats[0])
   h = len(all_seats)
-  # count surrounding seats
-  look_nw = (x-1, y-1)
-  look_nn = (x,y-1)
-  look_ne = (x+1,y-1)
-  look_ww = (x-1,y)
-  look_ee = (x+1,y)
-  look_sw = (x-1,y+1)
-  look_ss = (x,y+1)
-  look_se = (x+1,y+1)
-  # check if coords in inside the grid and are empty
-  count_occup += ((0<=look_nw[0]<w) and (0<=look_nw[1]<h)) and (all_seats[look_nw[1]][look_nw[0]] == '#')
-  count_occup += ((0<=look_nn[0]<w) and (0<=look_nn[1]<h)) and (all_seats[look_nn[1]][look_nn[0]] == '#')
-  count_occup += ((0<=look_ne[0]<w) and (0<=look_ne[1]<h)) and (all_seats[look_ne[1]][look_ne[0]] == '#')
-  count_occup += ((0<=look_ww[0]<w) and (0<=look_ww[1]<h)) and (all_seats[look_ww[1]][look_ww[0]] == '#')
-  count_occup += ((0<=look_ee[0]<w) and (0<=look_ee[1]<h)) and (all_seats[look_ee[1]][look_ee[0]] == '#')
-  count_occup += ((0<=look_sw[0]<w) and (0<=look_sw[1]<h)) and (all_seats[look_sw[1]][look_sw[0]] == '#')
-  count_occup += ((0<=look_ss[0]<w) and (0<=look_ss[1]<h)) and (all_seats[look_ss[1]][look_ss[0]] == '#')
-  count_occup += ((0<=look_se[0]<w) and (0<=look_se[1]<h)) and (all_seats[look_se[1]][look_se[0]] == '#')
+  # surrounding seats
+  look_nw = lambda x,y: (x-1, y-1)
+  look_nn = lambda x,y: (x,y-1)
+  look_ne = lambda x,y: (x+1,y-1)
+  look_ww = lambda x,y: (x-1,y)
+  look_ee = lambda x,y: (x+1,y)
+  look_sw = lambda x,y: (x-1,y+1)
+  look_ss = lambda x,y: (x,y+1)
+  look_se = lambda x,y: (x+1,y+1)
+  directions = [look_nw, look_nn, look_ne, look_ww, look_ee, look_sw, look_ss, look_se]
+  count_occup = 0
+  # look in each direction
+  for look in directions:
+    new_x, new_y = look(x, y)
+    # if that seat if occupied, count it
+    count_occup += ((0<=new_x<w) and (0<=new_y<h)) and (all_seats[new_y][new_x] == '#')
   return count_occup
 
 @timer
@@ -66,6 +64,8 @@ def d11p1(data):
   return "".join(last_seats).count('#')
 
 def seat_visible(x, y, seats):
+  w = len(seats[0])
+  h = len(seats)
   look_nw = lambda x,y: (x-1, y-1)
   look_nn = lambda x,y: (x,y-1)
   look_ne = lambda x,y: (x+1,y-1)
@@ -85,7 +85,7 @@ def seat_visible(x, y, seats):
       # Move to seat in current looking direction 'look'
       new_x,new_y = look(new_x,new_y)
       # if outside grid, stop looking
-      if not (0 <= new_x < len(seats[0]) and 0 <= new_y < len(seats)):
+      if not ((0 <= new_x < w) and (0 <= new_y < h)):
         break
       looking_at_seat = seats[new_y][new_x]
       # if current seat is empty or occupied
@@ -103,6 +103,7 @@ def d11p2(data):
     # print()
     new_seats = copy.deepcopy(last_seats)
     for y,row in enumerate(last_seats):
+      # split row into list for easy editing
       row = list(row)
       for x,seat in enumerate(row):
         # if not a seat, skip it
@@ -114,7 +115,7 @@ def d11p2(data):
           row[x] = 'L'
         elif seat == 'L' and count_occup == 0:
           row[x] = '#'
-
+      # rebuilt row array (list to string)
       row = "".join(row)
       new_seats[y] = row
     # print("\n".join(new_seats))

@@ -14,10 +14,9 @@ def timer(func):
     return val
   return wrapper
 
-@timer
-def d15p1(data):
+def nth_number(data, N):
   data = list(reversed(list(map(int, data.split(",")))))
-  for i in range(len(data),2020):
+  for i in range(len(data),N):
     last_number = data[0]
     try:
       last_occurence = data[1:].index(last_number) +1
@@ -27,7 +26,16 @@ def d15p1(data):
     data.insert(0, last_occurence)
   return data[0]
 
+@timer
+def d15p1(data):
+  return nth_number(data, 2020)
+
+@timer
+def d15p2(data):
+  return nth_number(data, 30000000)
+
 with open("input.txt", "r") as f:
   data = f.read()
   # Run challenges
   d15p1(data)
+  d15p2(data)

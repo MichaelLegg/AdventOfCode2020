@@ -15,57 +15,6 @@ def timer(func):
   return wrapper
 
 import re
-@timer
-def d16p1(data):
-  data = data.split("\n")
-  nearby = False
-  rules = []
-  invalid_nums = []
-  for line in data:
-    if not nearby:
-      if line[0:5] == "class":
-        m = re.match("(\d+)-(\d+) or (\d+)-(\d+)", line[7:])
-        r1 = (int(m.group(1)), int(m.group(2))+1)
-        r2 = (int(m.group(3)), int(m.group(4))+1)
-        rules.append(range(r1[0], r1[1]))
-        rules.append(range(r2[0], r2[1]))
-        continue
-
-      if line[0:3] == "row":
-        m = re.match("(\d+)-(\d+) or (\d+)-(\d+)", line[5:])
-        r1 = (int(m.group(1)), int(m.group(2))+1)
-        r2 = (int(m.group(3)), int(m.group(4))+1)
-        rules.append(range(r1[0], r1[1]))
-        rules.append(range(r2[0], r2[1]))
-        continue
-
-      if line[0:4] == "seat":
-        m = re.match("(\d+)-(\d+) or (\d+)-(\d+)", line[6:])
-        r1 = (int(m.group(1)), int(m.group(2))+1)
-        r2 = (int(m.group(3)), int(m.group(4))+1)
-        rules.append(range(r1[0], r1[1]))
-        rules.append(range(r2[0], r2[1]))
-        continue
-
-    if line[:5] == "nearb":
-      nearby = True
-      continue
-
-    if nearby:
-      vals = list(map(int, line.split(',')))
-      for num in vals:
-        valid = False
-        for rule in rules:
-          valid_nums = list(rule)
-          if num in valid_nums:
-            valid = True
-            # print(num, "in", valid_nums)
-        if not valid:
-          invalid_nums.append(num)
-          # print(num, "not valid")
-
-  return sum(invalid_nums)
-
 def get_range(line):
   m = re.match("(\w+[ ]*[\w+]*): (\d+)-(\d+) or (\d+)-(\d+)", line)
   if not m:
@@ -77,44 +26,129 @@ def get_range(line):
   r2 = range(r2[0], r2[1])
   return (line_type,r1,r2, [], [])
 
+@timer
+def d16p1(data):
+  data = data.split("\n")
+  rules = []
+  invalid_nums = []
+  line_nxt_nearby = False
+  for line in data:
+    # append all rules into a big list
+    #   rule = tuple(type, range1, range2, possible columns, impossible columns)
+    if line[:4] in ['row:', 'seat', 'class']:
+      line_data = get_range(line)
+      if line_data:
+        rules.append(line_data)
+
+    if line[:5] == "nearb":
+      line_nxt_nearby = True
+      continue
+
+    if line_nxt_nearby:
+      ticket_vals = list(map(int, line.split(',')))
+      for num in ticket_vals:
+        valid = False
+        for (rule_name, r1, r2, _, _) in rules:
+          if num in r1 or num in r2:
+            valid = True
+        # if number not valid for any rule
+        if not valid:
+          invalid_nums.append(num)
+
+  # answer is the sum of all invalid numbers in nearby tickets
+  return sum(invalid_nums)
+
 
 @timer
 def d16p2(data):
   data = data.split("\n")
-  nearby = False
-  rules = []
-  invalid_nums = []
+  rules                = []
+  line_nxt_your_ticket = False
+  line_nxt_nearby      = False
 
   for line in data:
-    
+    # append all rules into a big list
+    #   rule = tuple(type, range1, range2, possible columns, impossible columns)
     line_data = get_range(line)
     if line_data:
       rules.append(line_data)
-    
-    if line[:6] == "nearby":
-      nearby = True
+
+    if line[:6] == "your t":
+      line_nxt_your_ticket = True
       continue
-      
-    if nearby:
+
+    # get your ticket
+    if line_nxt_your_ticket:
+      your_ticket_numbers = list(map(int, line.split(',')))
+      line_nxt_your_ticket = False
+    
+    # get nearby ticket
+    if line[:6] == "nearby":
+      line_nxt_nearby = True
+      continue
+
+    # go through each nearby ticket and determine possible rules
+    if line_nxt_nearby:
+      # split line into list of numbers
       vals = list(map(int, line.split(',')))
+      # skip if a number is not valid for atleast 1 rule
       for col,num in enumerate(vals):
+        valid = False
         for (rule_type, r1, r2, possible, impossible) in rules:
           if num in r1 or num in r2:
-            # number valid for rule
-            if col not in impossible and col not in possible:
-              possible.append(col)
-          else:
-            # not valid for rule
-            if col in possible:
-              possible.remove(col)
-            if col not in impossible:
-              impossible.append(col)
+            valid = True
             continue
+        # number is valid for atleast 1 rule
+        if valid:
+          # find which possible and impossible number columns this rule applies to
+          for (rule_type, r1, r2, possible, impossible) in rules:
+            if num in r1 or num in r2:
+              # this column is valid for this rule and not invalid for others
+              if col not in impossible and col not in possible:
+                possible.append(col)
+            else:
+              # number not valid for this rule
+              if col in possible:
+                possible.remove(col)
+              if col not in impossible:
+                impossible.append(col)
+              continue
 
-  for (rule_type, r1, r2, possible, impossible) in rules:
-    print(rule_type, possible)
+  # basically a suduko solver
+  #   if rules only have 1 possible column, use that column 
+  #   and prevent that column being used in others rules (res_list)
+  # Requires atleast 1 rule with only 1 possible column to start working
+  res_list = []
+  resolved = False
+  while not resolved:
+    # extract possible columns from rule tuple
+    assignments = [possible for (a,b,c,possible,i) in rules]
+    # resolved if all rules have exactly 1 possible column
+    resolved = all([len(p) == 1 for p in assignments])
+    # for each rule
+    for (rule_type, r1, r2, possible, impossible) in rules:
+      # if only 1 possible columns, it must be that column 
+      if len(possible) == 1:
+        # say this column has been resolved, 
+        #   so other rules dont use it as a possible column
+        res_list.append(possible[0])
+        possible = possible[0]
+        continue
+      # remove already resolved columns from this rules possible columns
+      for res in res_list:
+        if res in possible:
+          possible.remove(res)
 
-  return 0
+  # extract the departing rules
+  departing_rules = [(t,b,c,p,i) for (t,b,c,p,i) in rules if t[0:6] == "depart"]
+
+  # Use the resolved departing rule's column to index
+  #   your ticket numbers array
+  answer = 1
+  for (a,b,c,p,i) in departing_rules:
+    # Answer is product of our numbers indexed by departing rules column
+    answer *= your_ticket_numbers[p[0]]
+  return answer
 
 with open("input.txt", "r") as f:
   data = f.read()

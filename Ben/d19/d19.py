@@ -1,57 +1,43 @@
 
 def solve(line):
     # print("top string=", line)
-    passfail,remaining = match_or(new_rules[0], line)
-    # remaining strings are fails
-    return passfail and not remaining
+    match_indexes = match(line)
+    # if match_indexes matched the whole string
+    return len(line) in match_indexes
 
-# 0: 1
-# 1: 2 4
-# 2: 42 or 42 and 3
-# 3: a
-# 4: b
-#42: c
-def match_or(rule, line):
-    pos = line
-    rule_pass = False
-    for rp in rule:
-        rule_pass,line_nxt = match_sequence(rp, line)
-        if rule_pass:
-            # print('Rule match',rp,line,'->',line_nxt)
-            pos = line_nxt
-            break
-        # print('Rule mismatch',rp,line,'->',line_nxt)
-    return rule_pass,pos
+# Credit to
+# https://github.com/mebeim/aoc/blob/master/2020/README.md#day-19---monster-messages
+def match(input_str, rule='0', match_start=0):
+    # if starting past the string, return no matches
+    if match_start >= len(input_str):
+        return []
 
-def match_sequence(rule, line):
-    r_pass = False
-    for r in rule:
-        rr = new_rules[r]
-        # match A|B
-        if type(rr) is list:
-            r_pass,pos = match_or(rr, line)
-            if not r_pass:
-                break
-            line = pos
-        # Match terminal symbol
-        else:
-            # terminal letter, so check it matches line[0]
-            if not line:
-                r_pass = False
-                break
+    # get rule rhs from rule number
+    rule = rule_list[rule]
+    # rule = list for non-terminals, str for terminals
+    if type(rule) is str:
+        # if head of input string matches rule terminal symbol
+        if input_str[match_start] == rule:
+            return [match_start+1]
+        # else return no match indexes
+        return []
+    
+    matches = []
+    for option in rule:
+        submatches = [match_start]
+        for sub_rule in option:
+            new_matches = []
+            for submatch_pos in submatches:
+                new_matches += match(input_str, sub_rule, submatch_pos)
+            submatches = new_matches
+        matches += submatches
+    return matches
 
-            r_pass = line[0] == rr
-            if not r_pass:
-                break
-            line = line[1:]
-    return r_pass,line
-
-
-new_rules = {}
+rule_list = {}
 with open("input.txt", "r") as f:
     data = f.read()
     rules, data = [part.split('\n') for part in data.split('\n\n')]
-    rules = [(int(r[0]), r[1]) for r in [line.split(': ') for line in rules]]
+    rules = [(r[0], r[1]) for r in [line.split(': ') for line in rules]]
 
     # convert rule numbers into rule indexes
     for (idx,rhs) in rules:
@@ -60,13 +46,13 @@ with open("input.txt", "r") as f:
         if rhs[0][0] in set('1234567890'):
             # non-terminal rule reference
             for part in rhs:
-                part = list(map(int, part.split(' ')))
+                part = part.split(' ')
                 line_rule.append(part)
                 continue
         else:
             # letter terminal
             line_rule = rhs[0][1]
-        new_rules[idx] = line_rule
+        rule_list[idx] = line_rule
 
     # run solver on data
     p1 = sum([solve(line) for line in data])
@@ -74,7 +60,9 @@ with open("input.txt", "r") as f:
 
     # 8: 42 | 42 8
     # 11: 42 31 | 42 11 31
-    new_rules[8]  = [[42],[42,8]]
-    new_rules[11] = [[42,31],[42,11,31]]
+    rule_list['8']  = [['42'],['42','8']]
+    rule_list['11'] = [['42','31'],['42','11','31']]
+    # rule_list[8]  = [[42]]+ [[42]*i for i in range(1,11)]
+    # rule_list[11] = [[42]*i+[31]*i for i in range(1,11)]
     p2 = sum([solve(line) for line in data])
     print(p2)
